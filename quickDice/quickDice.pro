@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT        +=network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -27,15 +28,23 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         quickdice.cpp \
-    detail.cpp
+    detail.cpp \
+    network.cpp \
+    newserver.cpp \
+    connectto.cpp
 
 HEADERS += \
         quickdice.h \
-    detail.h
+    detail.h \
+    network.h \
+    newserver.h \
+    connectto.h
 
 FORMS += \
         quickdice.ui \
-    detail.ui
+    detail.ui \
+    newserver.ui \
+    connectto.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

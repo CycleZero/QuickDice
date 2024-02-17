@@ -17,6 +17,14 @@ detail::~detail()
 void detail::recdata(QString data)
 {
     QStringList list=data.split(':');
-    ui->sum->setText(list[0]);
-    ui->out->setText(list[1]);
+    if(list.size()==2)
+    {
+        ui->sum->setText(list[0]);
+        ui->out->setText(list[1]);
+    }
+    else {
+        ui->sum->setText(list[1]);
+        ui->out->setText(list[2]);
+    }
+
 }

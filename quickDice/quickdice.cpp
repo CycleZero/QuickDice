@@ -1,8 +1,14 @@
 #include "quickdice.h"
 #include "ui_quickdice.h"
+#include "newserver.h"
+#include "connectto.h"
 
 int a[120]={0},b=0;
 QString num,fanwei;
+newserverb *server;
+client *clientb;
+bool clientStatus=0,serverStatus=0;
+int numclient=0;
 
 QuickDice::QuickDice(QWidget *parent) :
     QMainWindow(parent),
@@ -26,6 +32,18 @@ void QuickDice::on_pushButton_clicked()
             ui->out->setText(srec(str,sum));
             ui->sum->setText(t=QString::number(sum));
             listitem(ui->out->toPlainText(),sum);
+            if(clientStatus==1)
+            {
+                QString msg=QString(clientb->username+":"+QString::number(sum)+":"+ui->out->toPlainText());
+                clientb->tcpSocket.write(msg.toUtf8());
+            }
+            if(serverStatus==1)
+            {
+                QString msg=QString(server->username+":"+QString::number(sum)+":"+ui->out->toPlainText());
+               // QByteArray msgb=msg.toLatin1();
+                sendMessage(msg);
+                qDebug()<<"sendmessage";
+            }
             ui->status->setText("状态：完毕");
     }
     else {
@@ -50,6 +68,16 @@ void QuickDice::on_pushButton_clicked()
                 ui->out->setText(o);
                 ui->sum->setText(QString::number(b));
                 listitem(o,b);
+                if(clientStatus==1)
+                {
+                    QString msg=QString(clientb->username+":"+QString::number(b)+":"+ui->out->toPlainText());
+                    clientb->tcpSocket.write(msg.toUtf8());
+                }
+                if(serverStatus==1)
+                {
+                    QString msg=QString(server->username+":"+QString::number(b)+":"+ui->out->toPlainText());
+                    sendMessage(msg.toLatin1());
+                }
                 ui->status->setText("状态：完毕");
 
             }
@@ -155,6 +183,15 @@ void QuickDice::listitem(QString str,long long sum)
     ui->listWidget->addItem(item);
 }
 
+void QuickDice::listitemOnline(QString str)
+{
+    QListWidgetItem *item=new QListWidgetItem();
+    item->setSizeHint(QSize(ui->listWidget->width(),20));
+    item->setText(QString(str));
+    item->setFlags(Qt::ItemIsEnabled);
+    ui->listWidget->addItem(item);
+}
+
 
 void QuickDice::on_listWidget_itemClicked(QListWidgetItem *item)
 {
@@ -171,3 +208,187 @@ void QuickDice::on_pushButton_3_clicked()
 {
     ui->listWidget->clear();
 }
+
+
+
+
+//-------------------------Server----------------------------
+
+
+void QuickDice::on_server_clicked()
+{
+    newServer *su=new newServer();
+    connect(su,SIGNAL(newserver(qint16)),this,SLOT(createserver(qint16)));
+    su->show();
+}
+
+void QuickDice::on_uiTest_clicked()
+{
+    newServer *t=new newServer();
+    t->show();
+}
+
+void QuickDice::createserver(qint16 port)
+{
+    newserverb *s=new newserverb();
+    server=s;
+    server->port=port;
+    server->username="Server";
+    if(server->server.listen(QHostAddress::Any,server->port) == false)
+    {
+        qDebug() << "服务器创建失败!";
+        return;
+    }
+    serverStatus=1;
+    qDebug() << "服务器创建成功!";
+    connect(&server->server,SIGNAL(newConnection()),this,SLOT(onNewconnection()));
+    //禁用创建服务器按钮和端口的输入
+    ui->server->setEnabled(false);
+    ui->client->setEnabled(false);
+
+       //定时器到时发送timeout信号,连接定时器处理的槽函数
+    connect(&server->timer,SIGNAL(timeout()),this,SLOT(onTimeout()));
+        //开始定时器,每隔3秒时间检查一次容器中是否存在断开连接的套接字
+    server->timer.start(3000);
+}
+
+
+
+void QuickDice::onNewconnection()
+{
+    QTcpSocket* clientl =  server->server.nextPendingConnection();
+
+    server->tcpClientList.append(clientl);
+    numclient++;
+    ui->clientnum->setText(QString("当前连接："+QString::number(numclient)));
+    connect(clientl,SIGNAL(readyRead()),this,SLOT(onReadyRead()));
+}
+void QuickDice::onReadyRead()
+{
+    for(int i=0;i<server->tcpClientList.size();i++)
+    {
+        if(server->tcpClientList.at(i)->bytesAvailable())
+        {
+            QByteArray buf = server->tcpClientList.at(i)->readAll();
+            QTcpSocket *t;
+            t=server->tcpClientList[i];
+            listitemOnline(QString(buf));
+qDebug()<<"server recv";
+            sendMessage(buf,t);
+        }
+    }
+}
+
+
+void QuickDice::sendMessage(QString msg)
+{
+    for(int i=0;i<server->tcpClientList.size();i++)
+    {
+        if(server->tcpClientList.at(i)->write(msg.toUtf8())<=0)
+        {
+            qDebug()<<"send error";
+        }
+
+    }
+}
+void QuickDice::sendMessage(QString msg,QTcpSocket *t)
+{
+    for(int i=0;i<server->tcpClientList.size();i++)
+    {
+        if(server->tcpClientList[i]!=t)
+        {
+            if(server->tcpClientList.at(i)->write(msg.toUtf8())<=0)
+            {
+                qDebug()<<"send error";
+            }
+        }
+
+    }
+}
+
+void QuickDice::onTimeout()
+{
+    for(int i=0;i<server->tcpClientList.size();i++)
+    {
+        if(server->tcpClientList.at(i)->state()==QAbstractSocket::UnconnectedState)
+        {
+            server->tcpClientList.removeAt(i);
+            --i;
+            numclient--;
+            ui->clientnum->setText(QString("当前连接："+QString::number(numclient)));
+        }
+    }
+}
+
+
+//--------------------------------Client----------------------
+
+
+
+void QuickDice::on_client_clicked()
+{
+    if(clientStatus==0)
+    {
+        connectTo *cu=new connectTo();
+        connect(cu,SIGNAL(sendsocket(client *)),this,SLOT(recvsocket(client *)));
+        cu->show();
+    }
+    else
+    {
+        clientb->tcpSocket.disconnectFromHost();
+        clientStatus=0;
+    }
+
+}
+
+void QuickDice::recvsocket(client *c)
+{
+    clientb=c;
+    connect(&clientb->tcpSocket,SIGNAL(connected()),this,SLOT(onConnected()));
+    connect(&clientb->tcpSocket,SIGNAL(disconnected()),this,SLOT(onDisconnected()));
+    connect(&clientb->tcpSocket,SIGNAL(readyRead()),this,SLOT(onReadRead()));
+    connect(&clientb->tcpSocket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(onError()));
+    clientb->tcpSocket.connectToHost(c->serverIp,c->serverPort);
+}
+
+void QuickDice::onConnected()
+{
+    clientStatus=1;
+    numclient++;
+    ui->clientnum->setText(QString("当前连接："+QString::number(numclient)));
+    ui->client->setText("断开连接");
+    ui->server->setEnabled(false);
+    ui->uiTest->setEnabled(false);
+
+}
+
+void QuickDice::onDisconnected()
+{
+    clientStatus=0;
+    numclient--;
+    ui->clientnum->setText(QString("当前连接："+QString::number(numclient)));
+    ui->client->setText("连接服务器");
+    ui->server->setEnabled(true);
+    ui->uiTest->setEnabled(true);
+
+}
+
+void QuickDice::onReadRead()
+{
+    qDebug()<<"onreadyRead";
+    if(clientb->tcpSocket.bytesAvailable())
+    {
+            //读取消息
+        qDebug()<<"client recv";
+    QByteArray buf = clientb->tcpSocket.readAll();
+            //显示消息到界面
+    listitemOnline(QString(buf));
+    }
+}
+
+void QuickDice::onError()
+{
+    QMessageBox::critical(this,"Error",clientb->tcpSocket.errorString());
+}
+
+

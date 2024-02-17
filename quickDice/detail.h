@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QListWidgetItem>
+#include <winsock2.h>
 
 namespace Ui {
 class detail;

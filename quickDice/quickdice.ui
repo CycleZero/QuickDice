@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>665</width>
-    <height>366</height>
+    <height>391</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -179,7 +179,7 @@
      <rect>
       <x>260</x>
       <y>190</y>
-      <width>371</width>
+      <width>381</width>
       <height>111</height>
      </rect>
     </property>
@@ -195,6 +195,58 @@
     </property>
     <property name="text">
      <string>清空记录</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="server">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>360</y>
+      <width>101</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>创建服务器</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="client">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>360</y>
+      <width>101</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>加入服务器</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="uiTest">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>360</y>
+      <width>80</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>ui</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="clientnum">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>330</y>
+      <width>111</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>当前连接：0</string>
     </property>
    </widget>
   </widget>
