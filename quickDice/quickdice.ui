@@ -10,8 +10,19 @@
     <height>391</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <kerning>true</kerning>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>QuickDice</string>
+  </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QLabel" name="label">
