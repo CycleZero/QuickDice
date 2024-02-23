@@ -6,9 +6,12 @@
 #include <detail.h>
 #include <QListWidgetItem>
 #include <network.h>
+#include <QClipboard>
+#include <onserver.h>
 
 namespace Ui {
 class QuickDice;
+
 }
 
 class QuickDice : public QMainWindow
@@ -23,36 +26,41 @@ public:
 
 signals:
     void senddata(QString);
+    void sendsocket(client *);
+    void sendsocket(newserverb *);
 
 private slots:
     void on_pushButton_clicked();
 
-    void on_pushButton_2_clicked();
-
+    void on_clean2_clicked();
+    void on_clean1_clicked();
+    void on_copy_clicked();
 
     void on_listWidget_itemClicked(QListWidgetItem *item);
 
     void listitem(QString str,long long sum);
     void listitemOnline(QString str);
 
-    void on_pushButton_3_clicked();
 
-    void on_server_clicked();
 
-    void on_uiTest_clicked();
+    void on_net_clicked();
 
 
 
-    void createserver(qint16);
+
+
+
     void onNewconnection();
     void onTimeout();
     void onReadyRead();
     void sendMessage(QString msg);
     void sendMessage(QString msg,QTcpSocket *t);
 
-    void on_client_clicked();
 
     void recvsocket(client *);
+    void recvsocket(newserverb *);
+
+    void serveroff();
 
    // void on_sendButton_clicked();
         //连接服务器按钮对应的槽函数
@@ -68,5 +76,6 @@ private slots:
 private:
     Ui::QuickDice *ui;
 };
+
 
 #endif // QUICKDICE_H

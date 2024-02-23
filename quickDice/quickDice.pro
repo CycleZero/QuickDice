@@ -31,20 +31,29 @@ SOURCES += \
     detail.cpp \
     network.cpp \
     newserver.cpp \
-    connectto.cpp
+    connectto.cpp \
+    testwindow.cpp \
+    onserver.cpp \
+    onclient.cpp
 
 HEADERS += \
         quickdice.h \
     detail.h \
     network.h \
     newserver.h \
-    connectto.h
+    connectto.h \
+    testwindow.h \
+    onserver.h \
+    onclient.h
 
 FORMS += \
         quickdice.ui \
     detail.ui \
     newserver.ui \
-    connectto.ui
+    connectto.ui \
+    testwindow.ui \
+    onserver.ui \
+    onclient.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

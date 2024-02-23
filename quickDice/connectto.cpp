@@ -39,3 +39,13 @@ void connectTo::on_connect_clicked()
     emit sendsocket(c);
     this->close();
 }
+
+
+void connectTo::on_servernew_clicked()
+{
+    newserverb *s=new newserverb();
+    s->port=ui->serverport->text().toShort();
+    s->username=ui->serverusername->text();
+    emit sendsocket(s);
+    this->close();
+}

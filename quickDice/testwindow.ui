@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QuickDice</class>
- <widget class="QMainWindow" name="QuickDice">
+ <class>TestWindow</class>
+ <widget class="QMainWindow" name="TestWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -10,20 +10,13 @@
     <height>481</height>
    </rect>
   </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
-  </property>
   <property name="font">
    <font>
     <family>微软雅黑</family>
-    <pointsize>6</pointsize>
    </font>
   </property>
   <property name="windowTitle">
-   <string>QuickDice</string>
+   <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout" stretch="20,10,20">
@@ -33,33 +26,14 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QTextEdit" name="sum">
-        <property name="font">
-         <font>
-          <family>微软雅黑</family>
-          <pointsize>30</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-        <property name="html">
-         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'微软雅黑'; font-size:30pt; font-weight:600; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:20pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-       </widget>
+       <widget class="QTextEdit" name="sum"/>
       </item>
       <item>
        <widget class="QWidget" name="widget_2" native="true">
         <property name="styleSheet">
          <string notr="true">background-color: rgb(255, 255, 255);</string>
         </property>
-        <layout class="QGridLayout" name="gridLayout_2" rowstretch="10,3" columnstretch="10,1">
+        <layout class="QGridLayout" name="gridLayout_2" rowstretch="10,3">
          <item row="1" column="1">
           <widget class="QPushButton" name="copy">
            <property name="sizePolicy">
@@ -69,7 +43,7 @@ p, li { white-space: pre-wrap; }
             </sizepolicy>
            </property>
            <property name="text">
-            <string>复制</string>
+            <string>PushButton</string>
            </property>
           </widget>
          </item>
@@ -94,9 +68,6 @@ p, li { white-space: pre-wrap; }
            <property name="frameShape">
             <enum>QFrame::NoFrame</enum>
            </property>
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
           </widget>
          </item>
         </layout>
@@ -110,13 +81,13 @@ p, li { white-space: pre-wrap; }
        <enum>QTabWidget::West</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
         <string>Tab 1</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout" rowstretch="10,6" columnstretch="15,1">
+       <layout class="QGridLayout" name="gridLayout" rowstretch="10,2">
         <item row="1" column="1">
          <widget class="QPushButton" name="clean1">
           <property name="sizePolicy">
@@ -126,7 +97,7 @@ p, li { white-space: pre-wrap; }
            </sizepolicy>
           </property>
           <property name="text">
-           <string>清空</string>
+           <string>PushButton</string>
           </property>
          </widget>
         </item>
@@ -239,7 +210,7 @@ p, li { white-space: pre-wrap; }
        <widget class="QListWidget" name="listWidget"/>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="10,4,6,6">
+       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="10,3,3">
         <item>
          <spacer name="verticalSpacer">
           <property name="orientation">
@@ -254,30 +225,12 @@ p, li { white-space: pre-wrap; }
          </spacer>
         </item>
         <item>
-         <widget class="QLabel" name="label_3">
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>状态：</string>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QTextEdit" name="status">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Ignored" vsizetype="Minimum">
+           <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>9</height>
-           </size>
           </property>
           <property name="readOnly">
            <bool>true</bool>
@@ -285,18 +238,12 @@ p, li { white-space: pre-wrap; }
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="net">
+         <widget class="QPushButton" name="server">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
-          </property>
-          <property name="font">
-           <font>
-            <family>微软雅黑</family>
-            <pointsize>9</pointsize>
-           </font>
           </property>
           <property name="text">
            <string>服务器管理</string>
@@ -324,7 +271,7 @@ p, li { white-space: pre-wrap; }
            </font>
           </property>
           <property name="text">
-           <string>D!</string>
+           <string>Dice!</string>
           </property>
          </widget>
         </item>

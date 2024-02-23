@@ -2,6 +2,8 @@
 #include "ui_quickdice.h"
 #include "newserver.h"
 #include "connectto.h"
+#include "testwindow.h"
+
 
 int a[120]={0},b=0;
 QString num,fanwei;
@@ -85,10 +87,22 @@ void QuickDice::on_pushButton_clicked()
 
 }
 
-void QuickDice::on_pushButton_2_clicked()
+void QuickDice::on_clean2_clicked()
 {
-    ui->out->clear();
+    ui->counts->clear();
+    ui->range->clear();
     ui->status->setText("状态：已清空");
+}
+void QuickDice::on_clean1_clicked()
+{
+    ui->textEdit->clear();
+    ui->status->setText("状态：已清空");
+}
+void QuickDice::on_copy_clicked()
+{
+    QClipboard *clip = QApplication::clipboard();
+    clip->setText(QString(ui->out->toPlainText()));
+    ui->status->setText("已复制");
 }
 
 
@@ -204,10 +218,6 @@ void QuickDice::on_listWidget_itemClicked(QListWidgetItem *item)
 
 
 
-void QuickDice::on_pushButton_3_clicked()
-{
-    ui->listWidget->clear();
-}
 
 
 
@@ -215,25 +225,12 @@ void QuickDice::on_pushButton_3_clicked()
 //-------------------------Server----------------------------
 
 
-void QuickDice::on_server_clicked()
-{
-    newServer *su=new newServer();
-    connect(su,SIGNAL(newserver(qint16)),this,SLOT(createserver(qint16)));
-    su->show();
-}
 
-void QuickDice::on_uiTest_clicked()
-{
-    newServer *t=new newServer();
-    t->show();
-}
 
-void QuickDice::createserver(qint16 port)
+
+void QuickDice::recvsocket(newserverb *s)
 {
-    newserverb *s=new newserverb();
     server=s;
-    server->port=port;
-    server->username="Server";
     if(server->server.listen(QHostAddress::Any,server->port) == false)
     {
         qDebug() << "服务器创建失败!";
@@ -241,15 +238,19 @@ void QuickDice::createserver(qint16 port)
     }
     serverStatus=1;
     qDebug() << "服务器创建成功!";
+
     connect(&server->server,SIGNAL(newConnection()),this,SLOT(onNewconnection()));
+    ui->status->setText("服务器已启动");
+
     //禁用创建服务器按钮和端口的输入
-    ui->server->setEnabled(false);
-    ui->client->setEnabled(false);
+ //   ui->server->setEnabled(false);
+   // ui->client->setEnabled(false);
 
        //定时器到时发送timeout信号,连接定时器处理的槽函数
     connect(&server->timer,SIGNAL(timeout()),this,SLOT(onTimeout()));
         //开始定时器,每隔3秒时间检查一次容器中是否存在断开连接的套接字
     server->timer.start(3000);
+
 }
 
 
@@ -260,9 +261,10 @@ void QuickDice::onNewconnection()
 
     server->tcpClientList.append(clientl);
     numclient++;
-    ui->clientnum->setText(QString("当前连接："+QString::number(numclient)));
+    ui->status->setText(QString("当前连接："+QString::number(numclient)));
     connect(clientl,SIGNAL(readyRead()),this,SLOT(onReadyRead()));
 }
+
 void QuickDice::onReadyRead()
 {
     for(int i=0;i<server->tcpClientList.size();i++)
@@ -315,9 +317,16 @@ void QuickDice::onTimeout()
             server->tcpClientList.removeAt(i);
             --i;
             numclient--;
-            ui->clientnum->setText(QString("当前连接："+QString::number(numclient)));
+            ui->status->setText(QString("当前连接："+QString::number(numclient)));
         }
     }
+}
+
+
+void QuickDice::serveroff()
+{
+    serverStatus=0;
+    ui->status->setText("服务器已关闭");
 }
 
 
@@ -325,18 +334,24 @@ void QuickDice::onTimeout()
 
 
 
-void QuickDice::on_client_clicked()
+void QuickDice::on_net_clicked()
 {
-    if(clientStatus==0)
+    if(clientStatus==0&&serverStatus==0)
     {
         connectTo *cu=new connectTo();
         connect(cu,SIGNAL(sendsocket(client *)),this,SLOT(recvsocket(client *)));
+        connect(cu,SIGNAL(sendsocket(newserverb *)),this,SLOT(recvsocket(newserverb *)));
         cu->show();
     }
-    else
-    {
-        clientb->tcpSocket.disconnectFromHost();
-        clientStatus=0;
+    else {
+        if(serverStatus==1)
+        {
+            OnServer *ss=new OnServer();
+            connect(ss,SIGNAL(serverclosed()),this,SLOT(serveroff()));
+            connect(this,SIGNAL(sendsocket(newserverb *)),ss,SLOT(recvsocket(newserverb *)));
+            emit sendsocket(server);
+            ss->show();
+        }
     }
 
 }
@@ -351,14 +366,12 @@ void QuickDice::recvsocket(client *c)
     clientb->tcpSocket.connectToHost(c->serverIp,c->serverPort);
 }
 
+
 void QuickDice::onConnected()
 {
     clientStatus=1;
     numclient++;
-    ui->clientnum->setText(QString("当前连接："+QString::number(numclient)));
-    ui->client->setText("断开连接");
-    ui->server->setEnabled(false);
-    ui->uiTest->setEnabled(false);
+    ui->status->setText(QString("当前连接："+QString::number(numclient)));
 
 }
 
@@ -366,10 +379,8 @@ void QuickDice::onDisconnected()
 {
     clientStatus=0;
     numclient--;
-    ui->clientnum->setText(QString("当前连接："+QString::number(numclient)));
-    ui->client->setText("连接服务器");
-    ui->server->setEnabled(true);
-    ui->uiTest->setEnabled(true);
+    ui->status->setText(QString("当前连接："+QString::number(numclient)));
+
 
 }
 

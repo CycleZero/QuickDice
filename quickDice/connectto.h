@@ -19,8 +19,13 @@ public:
 
 private slots:
     void on_connect_clicked();
+//    void recvsockets(newserverb *);
+//    void recvsocketc(client *);
+    void on_servernew_clicked();
+
 signals:
     void sendsocket(client *);
+    void sendsocket(newserverb *);
 
 private:
     Ui::connectTo *ui;
