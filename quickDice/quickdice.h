@@ -8,6 +8,12 @@
 #include <network.h>
 #include <QClipboard>
 #include <onserver.h>
+#include <onclient.h>
+#include <QEvent>
+#include <QMouseEvent>
+#include <QPropertyAnimation>
+#include <QEasingCurve>
+#include <QRect>
 
 namespace Ui {
 class QuickDice;
@@ -17,17 +23,22 @@ class QuickDice;
 class QuickDice : public QMainWindow
 {
     Q_OBJECT
+    Q_PROPERTY(double bcolor READ bcolor WRITE setBcolor)
+
 
 public:
     explicit QuickDice(QWidget *parent = nullptr);
     ~QuickDice();
     QString rec(QString str,long long &sum);
     QString srec(QString str,long long &sum);
+    double bcolor()const;
+    void setBcolor(double bcolor);
 
 signals:
     void senddata(QString);
     void sendsocket(client *);
     void sendsocket(newserverb *);
+    void sendanivar(double);
 
 private slots:
     void on_pushButton_clicked();
@@ -73,8 +84,22 @@ private slots:
     void onReadRead();
     void onError();
 
+    //------------UI-----------
+
+    void buttonColorChange(double sv,double ev);
+    void recvanivar(double);
+    void btnanifin();
+
+protected:
+    bool eventFilter(QObject *watched, QEvent *event);
 private:
     Ui::QuickDice *ui;
+
+    QPropertyAnimation *m_animation;
+    double m_bcolor;
+    QPushButton *currentchange;
+
+
 };
 
 

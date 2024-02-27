@@ -16,8 +16,8 @@
   <widget class="QListWidget" name="clientslist">
    <property name="geometry">
     <rect>
-     <x>60</x>
-     <y>10</y>
+     <x>70</x>
+     <y>20</y>
      <width>256</width>
      <height>192</height>
     </rect>

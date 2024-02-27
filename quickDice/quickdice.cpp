@@ -17,10 +17,23 @@ QuickDice::QuickDice(QWidget *parent) :
     ui(new Ui::QuickDice)
 {
     ui->setupUi(this);
+
+    ui->pushButton->installEventFilter(this);
+    ui->copy->installEventFilter(this);
+    ui->clean1->installEventFilter(this);
+    ui->clean2->installEventFilter(this);
+    ui->net->installEventFilter(this);
+
+
+    connect(this,SIGNAL(sendanivar(double)),this,SLOT(recvanivar(double)));
+    m_animation = new QPropertyAnimation();
+    m_animation->setTargetObject(this);
+   // connect(m_animation,SIGNAL(finished()),this,SLOT(btnanifin()));
 }
 
 QuickDice::~QuickDice()
 {
+    delete m_animation;
     delete ui;
 }
 
@@ -352,6 +365,13 @@ void QuickDice::on_net_clicked()
             emit sendsocket(server);
             ss->show();
         }
+        if(clientStatus==1)
+        {
+            OnClient *cc=new OnClient();
+            connect(this,SIGNAL(sendsocket(client *)),cc,SLOT(recvsocket(client *)));
+            emit sendsocket(clientb);
+            cc->show();
+        }
     }
 
 }
@@ -401,5 +421,133 @@ void QuickDice::onError()
 {
     QMessageBox::critical(this,"Error",clientb->tcpSocket.errorString());
 }
+
+
+//-------------------------UI-----------------------------------------
+
+
+
+bool QuickDice::eventFilter(QObject *watched, QEvent *event)
+{
+    if(watched->metaObject()->className()==QString("QPushButton"))
+    {
+        if(event->type() == QEvent::Enter)
+                {
+                    /*鼠标进入按钮事件*/
+                    qDebug()<<tr("监控到按钮事件，鼠标进入按钮事件");
+                    currentchange=static_cast<QPushButton*>(watched);
+                    buttonColorChange(0.1,4);
+                    return true;
+                }
+                else if(event->type() == QEvent::Leave)
+                {
+                    /*鼠标离开按钮事件*/
+                    qDebug()<<tr("监控到按钮事件，鼠标离开按钮事件");
+                    currentchange=static_cast<QPushButton*>(watched);
+                    QString qss = "background: qradialgradient(cx:0.5, cy:0.5, radius: 0.001,fx:0.5, fy:0.5, stop:0.0001 rgb(255,255,255), stop:0.8 rgb(30,144,255));border-radius:%2px;";
+                    QRect currentsize=currentchange->geometry();
+                    int size1;
+                    if(currentsize.width()>currentsize.height())
+                    {
+                        size1=currentsize.height();
+                    }
+                    else {
+                        size1=currentsize.width();
+                    }
+                    size1=size1/4;
+                    currentchange->setStyleSheet(qss.arg(size1));
+
+
+                    //connect(m_animation,SIGNAL(finished()),this,SLOT(btnanifin()));
+                    //buttonColorChange(2,0.0001);
+                    return true;
+                }
+        /*
+                else if(event->type() == QEvent::MouseButtonPress)
+                {
+                    //鼠标摁下按钮事件
+                    qDebug()<<tr("监控到按钮事件，鼠标摁下按钮事件");
+                    return true;
+                }
+                else if(event->type() == QEvent::MouseButtonRelease)
+                {
+                    //鼠标释放按钮事件
+                    qDebug()<<tr("监控到按钮事件，鼠标释放按钮事件");
+                    return true;
+                }
+        */
+        return QWidget::eventFilter(watched, event);
+    }
+}
+
+void QuickDice::buttonColorChange(double sv,double ev)
+{
+    m_animation->setPropertyName("bcolor");
+    m_animation->setDuration(150);
+   // m_animation->setKeyValueAt(0.001, 1);
+   // m_animation->setLoopCount(-1);
+    m_animation->setEasingCurve(QEasingCurve::OutQuart);
+    m_animation->setStartValue(sv);
+    m_animation->setEndValue(ev);
+    m_animation->start();
+
+}
+
+double QuickDice::bcolor()const
+{
+    return m_bcolor;
+}
+
+void QuickDice::setBcolor(double bcolor)
+{
+    m_bcolor=bcolor;
+    //QString qss = "background: qradialgradient(cx:0.5, cy:0.5, radius: %1,fx:0.5, fy:0.5, stop:0 rgb(255,255,255), stop:0.8 rgb(30,144,255))";
+   // QString qss = "background-color:rgb(255,255,%1)";
+    //ui->copy->setStyleSheet(qss.arg(bcolor));
+    emit sendanivar(bcolor);
+}
+
+
+void QuickDice::recvanivar(double co)
+{
+    QString qss = "background: qradialgradient(cx:0.5, cy:0.5, radius: %1,fx:0.5, fy:0.5, stop:0 rgb(255,255,255), stop:0.8 rgb(30,144,255));border-radius:%2px;";
+    QRect currentsize=currentchange->geometry();
+    int size1;
+    if(currentsize.width()>currentsize.height())
+    {
+        size1=currentsize.height();
+    }
+    else {
+        size1=currentsize.width();
+    }
+    size1=size1/4;
+
+
+    currentchange->setStyleSheet(qss.arg(co).arg(size1));
+   // qDebug()<<size1<<qss.arg(co).arg(size1)<<endl;
+}
+
+void QuickDice::btnanifin()
+{
+    qDebug()<<"btnanifin"<<endl;
+    QString qss = "background: qradialgradient(cx:0.5, cy:0.5, radius: 0.001,fx:0.5, fy:0.5, stop:0 rgb(255,255,255), stop:0.8 rgb(30,144,255));border-radius:%2px;";
+    QRect currentsize=currentchange->geometry();
+    int size1;
+    if(currentsize.width()>currentsize.height())
+    {
+        size1=currentsize.height();
+    }
+    else {
+        size1=currentsize.width();
+    }
+    size1=size1/4;
+    currentchange->setStyleSheet(qss.arg(size1));
+    disconnect(m_animation,SIGNAL(finished()),this,SLOT(btnanifin()));
+}
+
+
+
+
+
 
 

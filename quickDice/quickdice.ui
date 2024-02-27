@@ -19,11 +19,15 @@
   <property name="font">
    <font>
     <family>微软雅黑</family>
-    <pointsize>6</pointsize>
+    <pointsize>16</pointsize>
    </font>
   </property>
   <property name="windowTitle">
    <string>QuickDice</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QPushButton{background-color: rgb(30, 144, 225);border:2px groove gray;border-radius:50px;padding:2px 4px;border-style: outset;}
+                                           QPushButton:pressed{background-color:rgb(204, 228, 247);border-style: inset;}</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout" stretch="20,10,20">
@@ -59,7 +63,7 @@ p, li { white-space: pre-wrap; }
         <property name="styleSheet">
          <string notr="true">background-color: rgb(255, 255, 255);</string>
         </property>
-        <layout class="QGridLayout" name="gridLayout_2" rowstretch="10,3" columnstretch="10,1">
+        <layout class="QGridLayout" name="gridLayout_2" rowstretch="10,10" columnstretch="10,2">
          <item row="1" column="1">
           <widget class="QPushButton" name="copy">
            <property name="sizePolicy">
@@ -67,6 +71,10 @@ p, li { white-space: pre-wrap; }
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton{background-color: rgb(30, 144, 225);border:2px groove gray;border-radius:25px;padding:2px 4px;border-style: outset;}
+                                           QPushButton:pressed{background-color:rgb(204, 228, 247);border-style: inset;}</string>
            </property>
            <property name="text">
             <string>复制</string>
@@ -110,7 +118,7 @@ p, li { white-space: pre-wrap; }
        <enum>QTabWidget::West</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -124,6 +132,9 @@ p, li { white-space: pre-wrap; }
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">border-radius:10px</string>
           </property>
           <property name="text">
            <string>清空</string>
@@ -211,6 +222,9 @@ p, li { white-space: pre-wrap; }
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="styleSheet">
+           <string notr="true">border-radius:15px</string>
+          </property>
           <property name="text">
            <string>清空</string>
           </property>
@@ -257,6 +271,7 @@ p, li { white-space: pre-wrap; }
          <widget class="QLabel" name="label_3">
           <property name="font">
            <font>
+            <family>SimSun</family>
             <pointsize>10</pointsize>
            </font>
           </property>
@@ -298,6 +313,9 @@ p, li { white-space: pre-wrap; }
             <pointsize>9</pointsize>
            </font>
           </property>
+          <property name="styleSheet">
+           <string notr="true">border-radius:15px</string>
+          </property>
           <property name="text">
            <string>服务器管理</string>
           </property>
@@ -315,6 +333,12 @@ p, li { white-space: pre-wrap; }
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <family>微软雅黑</family>
@@ -322,6 +346,9 @@ p, li { white-space: pre-wrap; }
             <weight>75</weight>
             <bold>true</bold>
            </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"/>
           </property>
           <property name="text">
            <string>D!</string>
